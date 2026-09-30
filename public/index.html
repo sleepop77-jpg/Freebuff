@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1,viewport-fit=cover"
+  >
+  <title>PixelForge</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">
+          <span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+        </div>
+        <div>
+          <div class="brand-name">PIXELFORGE</div>
+          <div class="brand-subtitle">AI-native 2D animation studio</div>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <div class="connection-pill" id="connectionPill">
+          <span class="status-dot"></span>
+          <span id="connectionText">Connecting</span>
+        </div>
+
+        <button class="top-button" id="newProjectButton">New</button>
+        <button class="top-button" id="saveProjectButton">Save</button>
+        <button class="top-button accent" id="exportButton">Export</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="leftbar">
+        <div class="panel-label">TOOLS</div>
+
+        <button class="tool-button active" data-tool="pencil" title="Pencil (B)">
+          <span>✎</span><small>Pencil</small>
+        </button>
+
+        <button class="tool-button" data-tool="eraser" title="Eraser (E)">
+          <span>⌫</span><small>Eraser</small>
+        </button>
+
+        <button class="tool-button" data-tool="fill" title="Fill (G)">
+          <span>▧</span><small>Fill</small>
+        </button>
+
+        <button class="tool-button" data-tool="picker" title="Picker (I)">
+          <span>◎</span><small>Picker</small>
+        </button>
+
+        <div class="left-divider"></div>
+        <div class="panel-label">PALETTE</div>
+        <div class="palette" id="palette"></div>
+
+        <div class="left-spacer"></div>
+
+        <button class="tool-button compact" id="undoButton" title="Undo">
+          <span>↶</span><small>Undo</small>
+        </button>
+
+        <button class="tool-button compact" id="redoButton" title="Redo">
+          <span>↷</span><small>Redo</small>
+        </button>
+      </aside>
+
+      <section class="canvas-stage">
+        <div class="stage-toolbar">
+          <div class="stage-toolbar-left">
+            <span class="live-badge">LIVE</span>
+            <span id="frameReadout">Frame 1 / 1</span>
+            <span class="muted-separator">•</span>
+            <span id="canvasReadout">32 × 32</span>
+          </div>
+
+          <div class="stage-toolbar-right">
+            <label class="toolbar-control">
+              Zoom
+              <input id="zoomSlider" type="range" min="4" max="24" value="12">
+              <span id="zoomValue">12×</span>
+            </label>
+
+            <button class="icon-button" id="gridButton" title="Toggle Grid">#</button>
+            <button class="icon-button active" id="onionButton" title="Toggle Onion Skin">◌</button>
+          </div>
+        </div>
+
+        <div class="canvas-wrap">
+          <div class="canvas-checker"></div>
+          <canvas id="pixelCanvas"></canvas>
+        </div>
+
+        <div class="stage-footer">
+          <span id="cursorReadout">x: --  y: --</span>
+          <span id="toolReadout">Pencil</span>
+          <span id="selectedColorReadout">Color #111827</span>
+        </div>
+      </section>
+
+      <aside class="rightbar">
+        <div class="inspector-header">
+          <div>
+            <div class="section-kicker">INSPECTOR</div>
+            <h2>Project</h2>
+          </div>
+          <span class="tiny-version">v0.1</span>
+        </div>
+
+        <div class="inspector-section">
+          <div class="section-title">Canvas</div>
+          <div class="input-grid">
+            <label>
+              <span>Width</span>
+              <input id="widthInput" type="number" min="8" max="128" value="32">
+            </label>
+            <label>
+              <span>Height</span>
+              <input id="heightInput" type="number" min="8" max="128" value="32">
+            </label>
+          </div>
+        </div>
+
+        <div class="inspector-section">
+          <div class="section-title">Selected Frame</div>
+          <div class="frame-properties">
+            <label>
+              <span>Duration</span>
+              <div class="suffix-input">
+                <input id="durationInput" type="number" min="20" max="5000" value="100">
+                <b>ms</b>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="inspector-section">
+          <div class="section-title row-title">
+            <span>Layers</span>
+            <button class="mini-button" id="addLayerButton">+</button>
+          </div>
+          <div class="layer-list" id="layerList"></div>
+        </div>
+
+        <div class="inspector-section">
+          <div class="section-title">Agent Bridge</div>
+
+          <div class="agent-card">
+            <div class="agent-card-head">
+              <div>
+                <strong>CONTROL API</strong>
+                <span id="agentStatus">Browser bridge online</span>
+              </div>
+              <span class="agent-led" id="agentLed"></span>
+            </div>
+
+            <div class="agent-endpoint">
+              POST /api/command
+            </div>
+
+            <textarea
+              id="commandInput"
+              spellcheck="false"
+              aria-label="AI command input"
+            >{
+  "command": "add_frame"
+}</textarea>
+
+            <button class="agent-run-button" id="runCommandButton">
+              Run Agent Command
+            </button>
+
+            <button class="agent-help-button" id="showCapabilitiesButton">
+              View commands
+            </button>
+
+            <div class="capabilities hidden" id="capabilitiesBox"></div>
+          </div>
+        </div>
+
+        <div class="inspector-section">
+          <div class="section-title">Shortcuts</div>
+          <div class="shortcut-grid">
+            <span>B</span><small>Pencil</small>
+            <span>E</span><small>Eraser</small>
+            <span>G</span><small>Fill</small>
+            <span>I</span><small>Picker</small>
+            <span>Space</span><small>Play / pause</small>
+            <span>⌘S</span><small>Save</small>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <section class="timeline">
+      <div class="timeline-head">
+        <div>
+          <div class="section-kicker">ANIMATION</div>
+          <div class="timeline-title-row">
+            <h2>Timeline</h2>
+            <span id="fpsReadout">10 FPS</span>
+          </div>
+        </div>
+
+        <div class="timeline-actions">
+          <button class="timeline-button" id="prevFrameButton">◀</button>
+          <button class="play-button" id="playButton">▶ Play</button>
+          <button class="timeline-button" id="nextFrameButton">▶</button>
+          <button class="timeline-button" id="duplicateFrameButton">Duplicate</button>
+          <button class="timeline-button" id="addFrameButton">+ Frame</button>
+          <button class="timeline-button danger" id="deleteFrameButton">Delete</button>
+        </div>
+      </div>
+
+      <div class="timeline-track" id="timelineTrack"></div>
+    </section>
+
+    <div class="toast-stack" id="toastStack"></div>
+  </div>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
+===== END FILE =====

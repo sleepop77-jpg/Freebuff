@@ -1,0 +1,14 @@
+{
+  "name": "pixelforge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Pixel art animation editor with an AI-agent command bridge.",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "ws": "^8.18.3"
+  }
+}
+===== END FILE =====
